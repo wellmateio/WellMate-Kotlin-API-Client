@@ -44,17 +44,38 @@ object Client {
 
                     object ApiNinjas {
                         private const val URL = "${Text.URL}/api-ninjas"
+                        private val endpoint = Endpoint(client = client, url = URL)
 
+                        suspend fun post(
+                            body: Any,
+                            headers: HeadersBuilder.() -> Unit
+                        ): ResponseWrapper<Any> {
+                            return endpoint.post(body = body) { headers() }
+                        }
                     }
 
                     object Gemini {
                         private const val URL = "${Text.URL}/gemini"
+                        private val endpoint = Endpoint(client = client, url = URL)
 
+                        suspend fun post(
+                            body: Any,
+                            headers: HeadersBuilder.() -> Unit
+                        ): ResponseWrapper<Any> {
+                            return endpoint.post(body = body) { headers() }
+                        }
                     }
 
                     object OpenAI {
                         private const val URL = "${Text.URL}/openai"
+                        private val endpoint = Endpoint(client = client, url = URL)
 
+                        suspend fun post(
+                            body: Any,
+                            headers: HeadersBuilder.() -> Unit
+                        ): ResponseWrapper<Any> {
+                            return endpoint.post(body = body) { headers() }
+                        }
                     }
                 }
 
@@ -63,7 +84,14 @@ object Client {
 
                     object OpenAI {
                         private const val URL = "${Image.URL}/openai"
+                        private val endpoint = Endpoint(client = client, url = URL)
 
+                        suspend fun post(
+                            body: Any,
+                            headers: HeadersBuilder.() -> Unit
+                        ): ResponseWrapper<Any> {
+                            return endpoint.post(body = body) { headers() }
+                        }
                     }
                 }
             }
@@ -74,78 +102,202 @@ object Client {
 
             object Password {
                 private const val URL = "${Login.URL}/password"
+                private val endpoint = Endpoint(client = client, url = URL)
 
+                suspend fun post(
+                    body: Any,
+                    headers: HeadersBuilder.() -> Unit
+                ): ResponseWrapper<Any> {
+                    return endpoint.post(body = body) { headers() }
+                }
             }
 
             object Google {
                 private const val URL = "${Login.URL}/google"
+                private val endpoint = Endpoint(client = client, url = URL)
 
+                suspend fun post(
+                    body: Any,
+                    headers: HeadersBuilder.() -> Unit
+                ): ResponseWrapper<Any> {
+                    return endpoint.post(body = body) { headers() }
+                }
             }
 
             object Facebook {
                 private const val URL = "${Login.URL}/facebook"
+                private val endpoint = Endpoint(client = client, url = URL)
 
+                suspend fun post(
+                    body: Any,
+                    headers: HeadersBuilder.() -> Unit
+                ): ResponseWrapper<Any> {
+                    return endpoint.post(body = body) { headers() }
+                }
             }
         }
 
         object User {
             private const val URL = "${Api.URL}/user"
+            private val endpoint = Endpoint(client = client, url = URL)
 
             suspend fun post(
                 body: EmailPassword,
-                headers: HeadersBuilder.() -> Unit = { {} }
+                headers: HeadersBuilder.() -> Unit = { run {} }
             ): ResponseWrapper<Token> {
-                return Endpoint(client = client, url = URL).post(body = body) {
+                return endpoint.post(body = body) {
                     headers()
                 }
             }
 
             object Me {
                 private const val URL = "${User.URL}/me"
+                private val endpoint = Endpoint(client = client, url = URL)
 
                 suspend fun get(headers: HeadersBuilder.() -> Unit): ResponseWrapper<io.wellmate.api.client.userData.Me> {
-                    val endpoint = Endpoint(client = client, url = URL)
                     return endpoint.get { headers() }
                 }
             }
 
-            fun userId(userId: Int): Endpoint {
-                return Endpoint(client, "$URL/$userId")
+            class UserId(private val userId: Int) {
+                val URL: String
+                    get() = "${User.URL}/$userId"
+                private val endpoint = Endpoint(client = client, url = URL)
+
+                suspend fun delete(headers: HeadersBuilder.() -> Unit): ResponseWrapper<Any> {
+                    return endpoint.delete { headers() }
+                }
             }
 
             object Info {
                 private const val URL = "${User.URL}/info"
+                private val endpoint = Endpoint(client = client, url = URL)
 
-                fun userId(userId: Int): Endpoint {
-                    return Endpoint(client, "${URL}/$userId")
+                class UserId(private val userId: Int) {
+                    val URL: String
+                        get() = "${Info.URL}/$userId"
+                    private val endpoint = Endpoint(client = client, url = URL)
+
+                    suspend fun post(
+                        body: Any,
+                        headers: HeadersBuilder.() -> Unit
+                    ): ResponseWrapper<Any> {
+                        return endpoint.post(body = body) { headers() }
+                    }
+
+                    suspend fun get(headers: HeadersBuilder.() -> Unit): ResponseWrapper<Any> {
+                        return endpoint.get { headers() }
+                    }
                 }
             }
 
             object Activation {
                 private const val URL = "${User.URL}/activation"
 
-                fun resend(): Endpoint {
-                    return Endpoint(client, "${URL}/resend")
+                object Resend {
+                    private const val URL = "${Activation.URL}/resend"
+                    private val endpoint = Endpoint(client = client, url = URL)
+
+                    suspend fun post(
+                        body: Any,
+                        headers: HeadersBuilder.() -> Unit
+                    ): ResponseWrapper<Any> {
+                        return endpoint.post(body = body) { headers() }
+                    }
+                }
+
+                class Activate(private val activationCode: String) {
+                    val URL: String
+                        get() = "${Activation.URL}/activate/${activationCode}"
+                    private val endpoint = Endpoint(client = client, url = URL)
+
+                    suspend fun get(headers: HeadersBuilder.() -> Unit): ResponseWrapper<Any> {
+                        return endpoint.get { headers() }
+                    }
+                }
+            }
+
+
+            object Potential {
+                private const val URL = "${User.URL}/potential"
+                private val endpoint = Endpoint(client = client, url = URL)
+
+                suspend fun get(headers: HeadersBuilder.() -> Unit): ResponseWrapper<Any> {
+                    return endpoint.get { headers() }
                 }
             }
         }
 
         object Entry {
             private const val URL = "${Api.URL}/entry"
+            private val endpoint = Endpoint(client = client, url = URL)
+
+            suspend fun get(headers: HeadersBuilder.() -> Unit): ResponseWrapper<Any> {
+                return endpoint.get { headers() }
+            }
 
             object Meal {
                 private const val URL = "${Entry.URL}/meal"
+                private val endpoint = Endpoint(client = client, url = URL)
 
-                fun mealId(mealId: Int): Endpoint {
-                    return Endpoint(client, "$URL/$mealId")
+                suspend fun post(
+                    body: Any,
+                    headers: HeadersBuilder.() -> Unit
+                ): ResponseWrapper<Any> {
+                    return endpoint.post(body = body) { headers() }
+                }
+
+                suspend fun get(headers: HeadersBuilder.() -> Unit): ResponseWrapper<Any> {
+                    return endpoint.get { headers() }
+                }
+
+                class MealId(private val mealId: Int) {
+                    val URL: String
+                        get() = "${Meal.URL}/$mealId"
+                    private val endpoint = Endpoint(client = client, url = URL)
+
+                    suspend fun delete(headers: HeadersBuilder.() -> Unit): ResponseWrapper<Any> {
+                        return endpoint.delete { headers() }
+                    }
                 }
             }
 
             object Timer {
                 private const val URL = "${Entry.URL}/timer"
+                private val endpoint = Endpoint(client = client, url = URL)
 
-                fun timerId(timerId: Int): Endpoint {
-                    return Endpoint(client, "$URL/$timerId")
+                suspend fun post(
+                    body: Any,
+                    headers: HeadersBuilder.() -> Unit
+                ): ResponseWrapper<Any> {
+                    return endpoint.post(body = body) { headers() }
+                }
+
+                suspend fun get(headers: HeadersBuilder.() -> Unit): ResponseWrapper<Any> {
+                    return endpoint.get { headers() }
+                }
+
+                class TimerId(private val timerId: Int) {
+                    val URL: String
+                        get() = "${Timer.URL}/$timerId"
+                    private val endpoint = Endpoint(client = client, url = URL)
+
+                    suspend fun delete(headers: HeadersBuilder.() -> Unit): ResponseWrapper<Any> {
+                        return endpoint.delete { headers() }
+                    }
+                }
+            }
+        }
+
+        object Admin {
+            private const val URL = "${Api.URL}/admin"
+
+            object PotentialUser {
+                private const val URL = "${Admin.URL}/potential-user"
+                private val endpoint = Endpoint(client = client, url = URL)
+
+                suspend fun get(headers: HeadersBuilder.() -> Unit): ResponseWrapper<Any> {
+                    return endpoint.get { headers() }
                 }
             }
         }
