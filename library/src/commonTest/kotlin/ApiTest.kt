@@ -25,7 +25,7 @@ class ApiTest {
     fun `api-user-me get fails with no headers`() = runTest(testDispatcher) {
         val endpoint = Client.Api.User.Me
         assertFalse(
-            endpoint.get { { } }.status.isSuccess(),
+            endpoint.get { }.status.isSuccess(),
             "/api/user/me:get should not be successful when no header is provided"
         )
     }
@@ -37,7 +37,7 @@ class ApiTest {
             IllegalArgumentException::class,
             "/api/user:post should not be successful when body is empty"
         ) {
-            endpoint.post(body = EmailPassword("", "")) { { } }
+            endpoint.post(body = EmailPassword("", ""))
         }
     }
 
@@ -45,11 +45,12 @@ class ApiTest {
     fun `api-user post+delete succeeds with proper body + with me get`() = runTest(testDispatcher) {
         val endpoint = Client.Api.User
 
-        // Some fake credentials
+        // Fake credentials generated for test purposes only
         val emailPassword = EmailPassword(
             email = "noreply@wellmate.io",
             password = "nFbz\$Qc%!!@PgLl@5\\$^pH47XW9vl2D!SEp@b",
         )
+
         val resultCreate = endpoint.post(body = emailPassword)
         assertTrue(resultCreate.status.isSuccess())
         val token = resultCreate.body()
@@ -63,7 +64,8 @@ class ApiTest {
         assertTrue(resultMe.status.isSuccess())
         val me = resultMe.body()
 
-        val resultDelete = endpoint.userId(userId = me.id).delete<Any> {
+        val deleteEndpoint = Client.Api.User.UserId(userId = me.id)
+        val resultDelete = deleteEndpoint.delete {
             append(
                 HttpHeaders.Authorization,
                 "${token.tokenType} ${token.accessToken}",

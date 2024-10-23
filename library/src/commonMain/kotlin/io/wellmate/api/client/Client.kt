@@ -1,3 +1,5 @@
+@file:Suppress("PrivatePropertyName", "unused")
+
 package io.wellmate.api.client
 
 import io.ktor.client.HttpClient
@@ -48,7 +50,7 @@ object Client {
 
                         suspend fun post(
                             body: Any,
-                            headers: HeadersBuilder.() -> Unit
+                            headers: HeadersBuilder.() -> Unit = { }
                         ): ResponseWrapper<Any> {
                             return endpoint.post(body = body) { headers() }
                         }
@@ -60,7 +62,7 @@ object Client {
 
                         suspend fun post(
                             body: Any,
-                            headers: HeadersBuilder.() -> Unit
+                            headers: HeadersBuilder.() -> Unit = { }
                         ): ResponseWrapper<Any> {
                             return endpoint.post(body = body) { headers() }
                         }
@@ -72,7 +74,7 @@ object Client {
 
                         suspend fun post(
                             body: Any,
-                            headers: HeadersBuilder.() -> Unit
+                            headers: HeadersBuilder.() -> Unit = { }
                         ): ResponseWrapper<Any> {
                             return endpoint.post(body = body) { headers() }
                         }
@@ -88,7 +90,7 @@ object Client {
 
                         suspend fun post(
                             body: Any,
-                            headers: HeadersBuilder.() -> Unit
+                            headers: HeadersBuilder.() -> Unit = { }
                         ): ResponseWrapper<Any> {
                             return endpoint.post(body = body) { headers() }
                         }
@@ -106,7 +108,7 @@ object Client {
 
                 suspend fun post(
                     body: Any,
-                    headers: HeadersBuilder.() -> Unit
+                    headers: HeadersBuilder.() -> Unit = { }
                 ): ResponseWrapper<Any> {
                     return endpoint.post(body = body) { headers() }
                 }
@@ -118,7 +120,7 @@ object Client {
 
                 suspend fun post(
                     body: Any,
-                    headers: HeadersBuilder.() -> Unit
+                    headers: HeadersBuilder.() -> Unit = { }
                 ): ResponseWrapper<Any> {
                     return endpoint.post(body = body) { headers() }
                 }
@@ -130,7 +132,7 @@ object Client {
 
                 suspend fun post(
                     body: Any,
-                    headers: HeadersBuilder.() -> Unit
+                    headers: HeadersBuilder.() -> Unit = { }
                 ): ResponseWrapper<Any> {
                     return endpoint.post(body = body) { headers() }
                 }
@@ -143,7 +145,7 @@ object Client {
 
             suspend fun post(
                 body: EmailPassword,
-                headers: HeadersBuilder.() -> Unit = { run {} }
+                headers: HeadersBuilder.() -> Unit = { }
             ): ResponseWrapper<Token> {
                 return endpoint.post(body = body) {
                     headers()
@@ -154,17 +156,17 @@ object Client {
                 private const val URL = "${User.URL}/me"
                 private val endpoint = Endpoint(client = client, url = URL)
 
-                suspend fun get(headers: HeadersBuilder.() -> Unit): ResponseWrapper<io.wellmate.api.client.userData.Me> {
+                suspend fun get(headers: HeadersBuilder.() -> Unit = { }): ResponseWrapper<io.wellmate.api.client.userData.Me> {
                     return endpoint.get { headers() }
                 }
             }
 
             class UserId(private val userId: Int) {
-                val URL: String
+                private val URL: String
                     get() = "${User.URL}/$userId"
                 private val endpoint = Endpoint(client = client, url = URL)
 
-                suspend fun delete(headers: HeadersBuilder.() -> Unit): ResponseWrapper<Any> {
+                suspend fun delete(headers: HeadersBuilder.() -> Unit = { }): ResponseWrapper<Any> {
                     return endpoint.delete { headers() }
                 }
             }
@@ -174,18 +176,18 @@ object Client {
                 private val endpoint = Endpoint(client = client, url = URL)
 
                 class UserId(private val userId: Int) {
-                    val URL: String
+                    private val URL: String
                         get() = "${Info.URL}/$userId"
                     private val endpoint = Endpoint(client = client, url = URL)
 
                     suspend fun post(
                         body: Any,
-                        headers: HeadersBuilder.() -> Unit
+                        headers: HeadersBuilder.() -> Unit = { }
                     ): ResponseWrapper<Any> {
                         return endpoint.post(body = body) { headers() }
                     }
 
-                    suspend fun get(headers: HeadersBuilder.() -> Unit): ResponseWrapper<Any> {
+                    suspend fun get(headers: HeadersBuilder.() -> Unit = { }): ResponseWrapper<Any> {
                         return endpoint.get { headers() }
                     }
                 }
@@ -200,18 +202,18 @@ object Client {
 
                     suspend fun post(
                         body: Any,
-                        headers: HeadersBuilder.() -> Unit
+                        headers: HeadersBuilder.() -> Unit = { }
                     ): ResponseWrapper<Any> {
                         return endpoint.post(body = body) { headers() }
                     }
                 }
 
                 class Activate(private val activationCode: String) {
-                    val URL: String
+                    private val URL: String
                         get() = "${Activation.URL}/activate/${activationCode}"
                     private val endpoint = Endpoint(client = client, url = URL)
 
-                    suspend fun get(headers: HeadersBuilder.() -> Unit): ResponseWrapper<Any> {
+                    suspend fun get(headers: HeadersBuilder.() -> Unit = { }): ResponseWrapper<Any> {
                         return endpoint.get { headers() }
                     }
                 }
@@ -222,7 +224,7 @@ object Client {
                 private const val URL = "${User.URL}/potential"
                 private val endpoint = Endpoint(client = client, url = URL)
 
-                suspend fun get(headers: HeadersBuilder.() -> Unit): ResponseWrapper<Any> {
+                suspend fun get(headers: HeadersBuilder.() -> Unit = { }): ResponseWrapper<Any> {
                     return endpoint.get { headers() }
                 }
             }
@@ -232,7 +234,7 @@ object Client {
             private const val URL = "${Api.URL}/entry"
             private val endpoint = Endpoint(client = client, url = URL)
 
-            suspend fun get(headers: HeadersBuilder.() -> Unit): ResponseWrapper<Any> {
+            suspend fun get(headers: HeadersBuilder.() -> Unit = { }): ResponseWrapper<Any> {
                 return endpoint.get { headers() }
             }
 
@@ -242,21 +244,21 @@ object Client {
 
                 suspend fun post(
                     body: Any,
-                    headers: HeadersBuilder.() -> Unit
+                    headers: HeadersBuilder.() -> Unit = { }
                 ): ResponseWrapper<Any> {
                     return endpoint.post(body = body) { headers() }
                 }
 
-                suspend fun get(headers: HeadersBuilder.() -> Unit): ResponseWrapper<Any> {
+                suspend fun get(headers: HeadersBuilder.() -> Unit = { }): ResponseWrapper<Any> {
                     return endpoint.get { headers() }
                 }
 
                 class MealId(private val mealId: Int) {
-                    val URL: String
+                    private val URL: String
                         get() = "${Meal.URL}/$mealId"
                     private val endpoint = Endpoint(client = client, url = URL)
 
-                    suspend fun delete(headers: HeadersBuilder.() -> Unit): ResponseWrapper<Any> {
+                    suspend fun delete(headers: HeadersBuilder.() -> Unit = { }): ResponseWrapper<Any> {
                         return endpoint.delete { headers() }
                     }
                 }
@@ -268,21 +270,21 @@ object Client {
 
                 suspend fun post(
                     body: Any,
-                    headers: HeadersBuilder.() -> Unit
+                    headers: HeadersBuilder.() -> Unit = { }
                 ): ResponseWrapper<Any> {
                     return endpoint.post(body = body) { headers() }
                 }
 
-                suspend fun get(headers: HeadersBuilder.() -> Unit): ResponseWrapper<Any> {
+                suspend fun get(headers: HeadersBuilder.() -> Unit = { }): ResponseWrapper<Any> {
                     return endpoint.get { headers() }
                 }
 
                 class TimerId(private val timerId: Int) {
-                    val URL: String
+                    private val URL: String
                         get() = "${Timer.URL}/$timerId"
                     private val endpoint = Endpoint(client = client, url = URL)
 
-                    suspend fun delete(headers: HeadersBuilder.() -> Unit): ResponseWrapper<Any> {
+                    suspend fun delete(headers: HeadersBuilder.() -> Unit = { }): ResponseWrapper<Any> {
                         return endpoint.delete { headers() }
                     }
                 }
@@ -296,7 +298,7 @@ object Client {
                 private const val URL = "${Admin.URL}/potential-user"
                 private val endpoint = Endpoint(client = client, url = URL)
 
-                suspend fun get(headers: HeadersBuilder.() -> Unit): ResponseWrapper<Any> {
+                suspend fun get(headers: HeadersBuilder.() -> Unit = { }): ResponseWrapper<Any> {
                     return endpoint.get { headers() }
                 }
             }
