@@ -1,6 +1,7 @@
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.targets.native.tasks.KotlinNativeSimulatorTest
+import org.apache.tools.ant.taskdefs.condition.Os
 import java.io.ByteArrayOutputStream
 
 plugins {
@@ -40,6 +41,7 @@ kotlin {
             implementation(libs.ktor.client.core)
             implementation(libs.ktor.client.content.negotiation)
             implementation(libs.ktor.client.serialization)
+            implementation(libs.ktor.serialization.kotlinx.json)
             implementation(libs.ktor.client.logging)
         }
 
@@ -94,7 +96,9 @@ tasks.register<Exec>("bootIOSSimulator") {
 }
 
 tasks.withType<KotlinNativeSimulatorTest>().configureEach {
-    dependsOn("bootIOSSimulator")
-    standalone.set(false)
-    device.set(deviceName)
+    if (Os.isFamily(Os.FAMILY_MAC)) {
+        dependsOn("bootIOSSimulator")
+        standalone.set(false)
+        device.set(deviceName)
+    }
 }

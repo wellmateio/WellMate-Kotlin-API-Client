@@ -1,4 +1,4 @@
-package io.wellmate.api.client.userData
+package io.wellmate.api.client.auth
 
 import kotlinx.serialization.*
 import kotlinx.serialization.json.*
@@ -10,15 +10,19 @@ data class EmailPassword(val email: String, val password: String) {
         /**
          * Email address pattern, same as [android.util.Patterns.EMAIL_ADDRESS]
          */
-        require(email.matches(Regex(
-            "[a-zA-Z0-9+._%\\-]{1,256}" +
-                    "@" +
-                    "[a-zA-Z0-9][a-zA-Z0-9\\-]{0,64}" +
-                    "(" +
-                    "\\." +
-                    "[a-zA-Z0-9][a-zA-Z0-9\\-]{0,25}" +
-                    ")+"
-        )))
+        require(
+            email.matches(
+                Regex(
+                    "[a-zA-Z0-9+._%\\-]{1,256}" +
+                            "@" +
+                            "[a-zA-Z0-9][a-zA-Z0-9\\-]{0,64}" +
+                            "(" +
+                            "\\." +
+                            "[a-zA-Z0-9][a-zA-Z0-9\\-]{0,25}" +
+                            ")+"
+                )
+            )
+        )
 
         var (upperCase, lowerCase, digits, special) = listOf(0, 0, 0, 0)
         for (char in password) {
@@ -29,6 +33,6 @@ data class EmailPassword(val email: String, val password: String) {
                 else -> special++
             }
         }
-        require(upperCase>0 && lowerCase>0 && digits>0 && special>0)
+        require(upperCase > 0 && lowerCase > 0 && digits > 0 && special > 0)
     }
 }

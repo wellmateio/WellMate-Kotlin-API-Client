@@ -1,34 +1,34 @@
 package io.wellmate.api.client
 
-import io.ktor.client.*
-import io.ktor.client.request.*
-import io.ktor.client.statement.*
-import io.ktor.http.*
+import io.ktor.client.HttpClient
+import io.ktor.client.HttpClientConfig
+import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
+import io.ktor.client.plugins.logging.LogLevel
+import io.ktor.client.plugins.logging.Logging
+import io.ktor.http.HeadersBuilder
+import io.ktor.serialization.kotlinx.json.json
+import io.wellmate.api.client.auth.EmailPassword
+import io.wellmate.api.client.auth.Token
+import kotlinx.serialization.json.Json
 
-class Endpoint(private val client: HttpClient, private val url: String) {
-    suspend fun get(headers: () -> Headers = { headers { } }): HttpResponse {
-        return client.get(url) {
-            headers()
-        }
-    }
-    suspend fun post(body: Any, contentType: ContentType = ContentType.Application.Json, headers: () -> Headers = { headers { } }): HttpResponse {
-        return client.post(url) {
-            headers()
-            contentType(contentType)
-            setBody(body)
-        }
-    }
-    suspend fun delete(headers: () -> Headers = { headers { } }): HttpResponse {
-        return client.delete(url) {
-            headers()
-        }
+fun HttpClientConfig<*>.addLogging() {
+    install(Logging) {
+        level = LogLevel.ALL
     }
 }
 
-
 object Client {
     private const val URL = "https://wellmate-395510.lm.r.appspot.com"
-    val client = HttpClient()
+    val client = HttpClient {
+        addLogging()
+        install(ContentNegotiation) {
+            json(Json {
+                ignoreUnknownKeys = true
+                prettyPrint = true
+                isLenient = true
+            })
+        }
+    }
 
     object Api {
         private const val URL = "${Client.URL}/api"
@@ -46,6 +46,7 @@ object Client {
                         private const val URL = "${Text.URL}/api-ninjas"
 
                     }
+
                     object Gemini {
                         private const val URL = "${Text.URL}/gemini"
 
@@ -75,10 +76,12 @@ object Client {
                 private const val URL = "${Login.URL}/password"
 
             }
+
             object Google {
                 private const val URL = "${Login.URL}/google"
 
             }
+
             object Facebook {
                 private const val URL = "${Login.URL}/facebook"
 
@@ -88,8 +91,11 @@ object Client {
         object User {
             private const val URL = "${Api.URL}/user"
 
-            suspend fun post(body: Any, headers: () -> Headers = { headers {} }): HttpResponse {
-                return Endpoint(client=client, url = URL).post(body=body) {
+            suspend fun post(
+                body: EmailPassword,
+                headers: HeadersBuilder.() -> Unit = { {} }
+            ): ResponseWrapper<Token> {
+                return Endpoint(client = client, url = URL).post(body = body) {
                     headers()
                 }
             }
@@ -97,8 +103,9 @@ object Client {
             object Me {
                 private const val URL = "${User.URL}/me"
 
-                suspend fun get(headers: () -> Headers): HttpResponse {
-                    return Endpoint(client=client, url=URL).get { headers() }
+                suspend fun get(headers: HeadersBuilder.() -> Unit): ResponseWrapper<io.wellmate.api.client.userData.Me> {
+                    val endpoint = Endpoint(client = client, url = URL)
+                    return endpoint.get { headers() }
                 }
             }
 
