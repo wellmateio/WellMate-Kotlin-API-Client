@@ -1,3 +1,4 @@
+import com.vanniktech.maven.publish.SonatypeHost
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.targets.native.tasks.KotlinNativeSimulatorTest
@@ -10,7 +11,7 @@ plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.kotlinx.serialization)
 
-    id("maven-publish")
+    alias(libs.plugins.venniktech)
 }
 
 val versions = Properties()
@@ -22,6 +23,8 @@ group = "io.wellmate"
 version = versions.getProperty("version")
 
 kotlin {
+    withSourcesJar(publish = false)
+
     jvmToolchain(17)
     androidTarget {
         publishLibraryVariants("release")
@@ -119,14 +122,42 @@ publishing {
             }
         }
     }
-    publications {
-        create<MavenPublication>("ReleaseAar") {
-            groupId = "io.wellmate"
-            artifactId = "api.client"
-            version = versions.getProperty("version")
-            afterEvaluate {
-                artifact(tasks.getByName("bundleReleaseAar"))
+}
+
+mavenPublishing {
+    coordinates(
+        groupId = "io.wellmate",
+        artifactId = "api.client",
+        version = versions.getProperty("version")
+    )
+
+    pom {
+        name.set("KMP Library containing WellMate API Client")
+        description.set("This library can be utilized by various KMP targets to connect with WellMate API")
+        inceptionYear.set("2024")
+        url.set("https://github.com/wellmateio/WellMate-Kotlin-API-Client")
+
+        licenses {
+            license {
+                name.set("The Apache License, Version 2.0")
+                url.set("http://www.apache.org/licenses/LICENSE-2.0.txt")
+                distribution.set("http://www.apache.org/licenses/LICENSE-2.0.txt")
             }
+        }
+
+        developers {
+            developer {
+                id.set("rgryta")
+                name.set("Radosław Gryta")
+                email.set("radek.gryta@gmail.com")
+                url.set("https://github.com/rgryta/")
+            }
+        }
+
+        scm {
+            url.set("https://github.com/wellmateio/WellMate-Kotlin-API-Client")
+            connection.set("scm:git:git://github.com/wellmateio/WellMate-Kotlin-API-Client.git")
+            developerConnection.set("scm:git:ssh://git@github.com/wellmateio/WellMate-Kotlin-API-Client.git")
         }
     }
 }
