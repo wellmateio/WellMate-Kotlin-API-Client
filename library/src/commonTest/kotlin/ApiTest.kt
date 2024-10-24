@@ -11,6 +11,7 @@ import kotlin.test.Test
 import kotlin.test.assertFailsWith
 import kotlin.test.assertFalse
 import kotlin.test.assertTrue
+import kotlin.random.Random
 
 class ApiTest {
 
@@ -47,7 +48,7 @@ class ApiTest {
 
         // Fake credentials generated for test purposes only
         val emailPassword = EmailPassword(
-            email = "noreply@wellmate.io",
+            email = "tester${Random.nextInt()}@wellmate.test",
             password = "nFbz\$Qc%!!@PgLl@5\\$^pH47XW9vl2D!SEp@b",
         )
 

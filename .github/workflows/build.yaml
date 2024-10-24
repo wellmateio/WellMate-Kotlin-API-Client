@@ -43,6 +43,6 @@ jobs:
       - name: Publish the library
         if: steps.vbump.outputs.bump == 'true'
         env:
-          USERNAME: ${{ secrets.USERNAME }}
-          TOKEN: ${{ secrets.TOKEN }}
+          GPR_USERNAME: ${{ secrets.GPR_USERNAME }}
+          GPR_TOKEN: ${{ secrets.GPR_TOKEN }}
         run: ./gradlew publish --no-daemon --stacktrace --info --scan

@@ -3,6 +3,7 @@ import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.targets.native.tasks.KotlinNativeSimulatorTest
 import org.apache.tools.ant.taskdefs.condition.Os
 import java.io.ByteArrayOutputStream
+import java.util.Properties
 
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
@@ -12,9 +13,13 @@ plugins {
     id("maven-publish")
 }
 
-group = "io.wellmate.api.client"
-version = "1.0"
+val versions = Properties()
+file("version.properties").inputStream().use { stream ->
+    versions.load(stream)
+}
 
+group = "io.wellmate"
+version = versions.getProperty("version")
 
 kotlin {
     jvmToolchain(17)
@@ -100,5 +105,28 @@ tasks.withType<KotlinNativeSimulatorTest>().configureEach {
         dependsOn("bootIOSSimulator")
         standalone.set(false)
         device.set(deviceName)
+    }
+}
+
+publishing {
+    repositories {
+        maven {
+            name = "GitHubPackages"
+            url = uri("https://maven.pkg.github.com/wellmateio/WellMate-Kotlin-API-Client")
+            credentials {
+                username = project.findProperty("gpr.user") as String? ?: System.getenv("GPR_USERNAME")
+                password = project.findProperty("gpr.key") as String? ?: System.getenv("GPR_TOKEN")
+            }
+        }
+    }
+    publications {
+        create<MavenPublication>("ReleaseAar") {
+            groupId = "io.wellmate"
+            artifactId = "api.client"
+            version = versions.getProperty("version")
+            afterEvaluate {
+                artifact(tasks.getByName("bundleReleaseAar"))
+            }
+        }
     }
 }
