@@ -1,14 +1,17 @@
 package io.wellmate.api.client.userData
 
 import kotlinx.datetime.LocalDateTime
+import kotlinx.datetime.serializers.LocalDateTimeIso8601Serializer
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
-import kotlinx.datetime.serializers.LocalDateTimeIso8601Serializer
 
 @Serializable
 enum class Sex {
-    @SerialName("m") M,
-    @SerialName("f") F,
+    @SerialName("m")
+    M,
+
+    @SerialName("f")
+    F,
 }
 
 @Serializable

@@ -12,12 +12,14 @@ import io.ktor.http.HeadersBuilder
 import io.ktor.http.parameters
 import io.ktor.serialization.kotlinx.json.json
 import io.ktor.utils.io.ByteReadChannel
-import io.wellmate.api.client.auth.Email
-import io.wellmate.api.client.app.MealFields
-import io.wellmate.api.client.app.Message
 import io.wellmate.api.client.auth.EmailPassword
 import io.wellmate.api.client.auth.OAuthToken
 import io.wellmate.api.client.auth.Token
+import io.wellmate.api.client.entry.MealFields
+import io.wellmate.api.client.entry.MealFieldsClient
+import io.wellmate.api.client.entry.TimerFieldsClient
+import io.wellmate.api.client.generics.Email
+import io.wellmate.api.client.generics.Message
 import io.wellmate.api.client.userData.PotentialUser
 import io.wellmate.api.client.userData.PotentialUserFields
 import io.wellmate.api.client.userData.UserInfo
@@ -129,10 +131,12 @@ object Client {
                     headers: HeadersBuilder.() -> Unit = { }
                 ): ResponseWrapper<Token> {
 
-                    return endpoint.submitForm(formParameters = { parameters {
-                        append("username", username)
-                        append("password", password)
-                    }}) {
+                    return endpoint.submitForm(formParameters = {
+                        parameters {
+                            append("username", username)
+                            append("password", password)
+                        }
+                    }) {
                         io.ktor.http.headers {
                             headers()
                             append("sec-ch-ua-model", secChUaModel)
@@ -252,7 +256,10 @@ object Client {
                 private const val URL = "${User.URL}/potential"
                 private val endpoint = Endpoint(client = client, url = URL)
 
-                suspend fun post(body: PotentialUserFields, headers: HeadersBuilder.() -> Unit = { }): ResponseWrapper<PotentialUser> {
+                suspend fun post(
+                    body: PotentialUserFields,
+                    headers: HeadersBuilder.() -> Unit = { }
+                ): ResponseWrapper<PotentialUser> {
                     return endpoint.post(body = body) { headers() }
                 }
             }
@@ -262,7 +269,7 @@ object Client {
             private const val URL = "${Api.URL}/entry"
             private val endpoint = Endpoint(client = client, url = URL)
 
-            suspend fun get(headers: HeadersBuilder.() -> Unit = { }): ResponseWrapper<Any> {
+            suspend fun get(headers: HeadersBuilder.() -> Unit = { }): ResponseWrapper<io.wellmate.api.client.entry.Entry> {
                 return endpoint.get { headers() }
             }
 
@@ -271,13 +278,13 @@ object Client {
                 private val endpoint = Endpoint(client = client, url = URL)
 
                 suspend fun post(
-                    body: Any,
+                    body: MealFieldsClient,
                     headers: HeadersBuilder.() -> Unit = { }
-                ): ResponseWrapper<Any> {
+                ): ResponseWrapper<io.wellmate.api.client.entry.Meal> {
                     return endpoint.post(body = body) { headers() }
                 }
 
-                suspend fun get(headers: HeadersBuilder.() -> Unit = { }): ResponseWrapper<Any> {
+                suspend fun get(headers: HeadersBuilder.() -> Unit = { }): ResponseWrapper<io.wellmate.api.client.entry.Meal> {
                     return endpoint.get { headers() }
                 }
 
@@ -297,13 +304,13 @@ object Client {
                 private val endpoint = Endpoint(client = client, url = URL)
 
                 suspend fun post(
-                    body: Any,
+                    body: TimerFieldsClient,
                     headers: HeadersBuilder.() -> Unit = { }
-                ): ResponseWrapper<Any> {
+                ): ResponseWrapper<io.wellmate.api.client.entry.Timer> {
                     return endpoint.post(body = body) { headers() }
                 }
 
-                suspend fun get(headers: HeadersBuilder.() -> Unit = { }): ResponseWrapper<Any> {
+                suspend fun get(headers: HeadersBuilder.() -> Unit = { }): ResponseWrapper<io.wellmate.api.client.entry.Timer> {
                     return endpoint.get { headers() }
                 }
 
