@@ -3,6 +3,7 @@ package io.wellmate.api.client
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.request.delete
+import io.ktor.client.request.forms.submitForm
 import io.ktor.client.request.get
 import io.ktor.client.request.headers
 import io.ktor.client.request.post
@@ -11,8 +12,11 @@ import io.ktor.client.statement.HttpResponse
 import io.ktor.http.ContentType
 import io.ktor.http.HeadersBuilder
 import io.ktor.http.HttpStatusCode
+import io.ktor.http.Parameters
+import io.ktor.http.ParametersBuilder
 import io.ktor.http.contentType
 import io.ktor.http.isSuccess
+import io.ktor.http.parameters
 import io.ktor.util.reflect.TypeInfo
 import io.ktor.util.reflect.typeInfo
 
@@ -38,6 +42,21 @@ class Endpoint(val client: HttpClient, val url: String) {
         crossinline headers: HeadersBuilder.() -> Unit = { },
     ): ResponseWrapper<T> {
         val response: HttpResponse = client.get(url) {
+            headers {
+                headers()
+            }
+        }
+        return ResponseWrapper(response, typeInfo<T>())
+    }
+
+    suspend inline fun <reified T : Any> submitForm(
+        crossinline formParameters: ParametersBuilder.() -> Unit = {},
+        crossinline headers: HeadersBuilder.() -> Unit = { },
+    ): ResponseWrapper<T> {
+        val response: HttpResponse = client.submitForm(url = url,
+            formParameters = parameters {
+                formParameters()
+            }) {
             headers {
                 headers()
             }

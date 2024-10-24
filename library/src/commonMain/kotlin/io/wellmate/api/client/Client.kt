@@ -7,10 +7,21 @@ import io.ktor.client.HttpClientConfig
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.client.plugins.logging.LogLevel
 import io.ktor.client.plugins.logging.Logging
+import io.ktor.http.ContentType
 import io.ktor.http.HeadersBuilder
+import io.ktor.http.parameters
 import io.ktor.serialization.kotlinx.json.json
+import io.ktor.utils.io.ByteReadChannel
+import io.wellmate.api.client.auth.Email
+import io.wellmate.api.client.app.MealFields
+import io.wellmate.api.client.app.Message
 import io.wellmate.api.client.auth.EmailPassword
+import io.wellmate.api.client.auth.OAuthToken
 import io.wellmate.api.client.auth.Token
+import io.wellmate.api.client.userData.PotentialUser
+import io.wellmate.api.client.userData.PotentialUserFields
+import io.wellmate.api.client.userData.UserInfo
+import io.wellmate.api.client.userData.UserInfoFields
 import kotlinx.serialization.json.Json
 
 fun HttpClientConfig<*>.addLogging() {
@@ -49,9 +60,9 @@ object Client {
                         private val endpoint = Endpoint(client = client, url = URL)
 
                         suspend fun post(
-                            body: Any,
+                            body: Message,
                             headers: HeadersBuilder.() -> Unit = { }
-                        ): ResponseWrapper<Any> {
+                        ): ResponseWrapper<MealFields> {
                             return endpoint.post(body = body) { headers() }
                         }
                     }
@@ -61,9 +72,9 @@ object Client {
                         private val endpoint = Endpoint(client = client, url = URL)
 
                         suspend fun post(
-                            body: Any,
+                            body: Message,
                             headers: HeadersBuilder.() -> Unit = { }
-                        ): ResponseWrapper<Any> {
+                        ): ResponseWrapper<MealFields> {
                             return endpoint.post(body = body) { headers() }
                         }
                     }
@@ -73,9 +84,9 @@ object Client {
                         private val endpoint = Endpoint(client = client, url = URL)
 
                         suspend fun post(
-                            body: Any,
+                            body: Message,
                             headers: HeadersBuilder.() -> Unit = { }
-                        ): ResponseWrapper<Any> {
+                        ): ResponseWrapper<MealFields> {
                             return endpoint.post(body = body) { headers() }
                         }
                     }
@@ -89,10 +100,14 @@ object Client {
                         private val endpoint = Endpoint(client = client, url = URL)
 
                         suspend fun post(
-                            body: Any,
+                            body: ByteReadChannel,
+                            contentType: ContentType = ContentType.Image.JPEG,
                             headers: HeadersBuilder.() -> Unit = { }
-                        ): ResponseWrapper<Any> {
-                            return endpoint.post(body = body) { headers() }
+                        ): ResponseWrapper<MealFields> {
+                            return endpoint.post(
+                                body = body,
+                                contentType = contentType
+                            ) { headers() }
                         }
                     }
                 }
@@ -106,11 +121,24 @@ object Client {
                 private const val URL = "${Login.URL}/password"
                 private val endpoint = Endpoint(client = client, url = URL)
 
-                suspend fun post(
-                    body: Any,
+                suspend fun submitForm(
+                    username: String,
+                    password: String,
+                    secChUaModel: String = "Unknown device",
+                    secChUaPlatform: String = "N/A",
                     headers: HeadersBuilder.() -> Unit = { }
-                ): ResponseWrapper<Any> {
-                    return endpoint.post(body = body) { headers() }
+                ): ResponseWrapper<Token> {
+
+                    return endpoint.submitForm(formParameters = { parameters {
+                        append("username", username)
+                        append("password", password)
+                    }}) {
+                        io.ktor.http.headers {
+                            headers()
+                            append("sec-ch-ua-model", secChUaModel)
+                            append("sec-ch-ua-platform", secChUaPlatform)
+                        }
+                    }
                 }
             }
 
@@ -119,9 +147,9 @@ object Client {
                 private val endpoint = Endpoint(client = client, url = URL)
 
                 suspend fun post(
-                    body: Any,
+                    body: OAuthToken,
                     headers: HeadersBuilder.() -> Unit = { }
-                ): ResponseWrapper<Any> {
+                ): ResponseWrapper<Token> {
                     return endpoint.post(body = body) { headers() }
                 }
             }
@@ -131,9 +159,9 @@ object Client {
                 private val endpoint = Endpoint(client = client, url = URL)
 
                 suspend fun post(
-                    body: Any,
+                    body: OAuthToken,
                     headers: HeadersBuilder.() -> Unit = { }
-                ): ResponseWrapper<Any> {
+                ): ResponseWrapper<Token> {
                     return endpoint.post(body = body) { headers() }
                 }
             }
@@ -181,13 +209,13 @@ object Client {
                     private val endpoint = Endpoint(client = client, url = URL)
 
                     suspend fun post(
-                        body: Any,
+                        body: UserInfoFields,
                         headers: HeadersBuilder.() -> Unit = { }
-                    ): ResponseWrapper<Any> {
+                    ): ResponseWrapper<UserInfo> {
                         return endpoint.post(body = body) { headers() }
                     }
 
-                    suspend fun get(headers: HeadersBuilder.() -> Unit = { }): ResponseWrapper<Any> {
+                    suspend fun get(headers: HeadersBuilder.() -> Unit = { }): ResponseWrapper<UserInfo> {
                         return endpoint.get { headers() }
                     }
                 }
@@ -201,7 +229,7 @@ object Client {
                     private val endpoint = Endpoint(client = client, url = URL)
 
                     suspend fun post(
-                        body: Any,
+                        body: Email,
                         headers: HeadersBuilder.() -> Unit = { }
                     ): ResponseWrapper<Any> {
                         return endpoint.post(body = body) { headers() }
@@ -224,8 +252,8 @@ object Client {
                 private const val URL = "${User.URL}/potential"
                 private val endpoint = Endpoint(client = client, url = URL)
 
-                suspend fun get(headers: HeadersBuilder.() -> Unit = { }): ResponseWrapper<Any> {
-                    return endpoint.get { headers() }
+                suspend fun post(body: PotentialUserFields, headers: HeadersBuilder.() -> Unit = { }): ResponseWrapper<PotentialUser> {
+                    return endpoint.post(body = body) { headers() }
                 }
             }
         }
@@ -298,7 +326,7 @@ object Client {
                 private const val URL = "${Admin.URL}/potential-user"
                 private val endpoint = Endpoint(client = client, url = URL)
 
-                suspend fun get(headers: HeadersBuilder.() -> Unit = { }): ResponseWrapper<Any> {
+                suspend fun get(headers: HeadersBuilder.() -> Unit = { }): ResponseWrapper<io.wellmate.api.client.userData.PotentialUser> {
                     return endpoint.get { headers() }
                 }
             }
