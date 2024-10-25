@@ -1,7 +1,7 @@
-package io.wellmate.api.client.userData
+package io.wellmate.api.client.dataclasses.userData
 
-import kotlinx.datetime.LocalDateTime
-import kotlinx.datetime.serializers.LocalDateTimeIso8601Serializer
+import kotlinx.datetime.Instant
+import kotlinx.datetime.serializers.InstantIso8601Serializer
 import kotlinx.serialization.Serializable
 
 @Serializable
@@ -12,5 +12,5 @@ data class PotentialUser(
     val email: String,
     val name: String,
     val info: String?,
-    @Serializable(with = LocalDateTimeIso8601Serializer::class) val added: LocalDateTime
+    @Serializable(with = InstantIso8601Serializer::class) val added: Instant
 )

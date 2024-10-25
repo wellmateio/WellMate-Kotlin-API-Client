@@ -1,4 +1,4 @@
-package io.wellmate.api.client.generics
+package io.wellmate.api.client.dataclasses.generics
 
 import kotlinx.serialization.Serializable
 

@@ -1,7 +1,7 @@
-package io.wellmate.api.client.userData
+package io.wellmate.api.client.dataclasses.userData
 
-import kotlinx.datetime.LocalDateTime
-import kotlinx.datetime.serializers.LocalDateTimeIso8601Serializer
+import kotlinx.datetime.Instant
+import kotlinx.datetime.serializers.InstantIso8601Serializer
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
@@ -19,7 +19,7 @@ data class UserInfoFields(
     val name: String?,
     val surname: String?,
 
-    @Serializable(with = LocalDateTimeIso8601Serializer::class) val birthday: LocalDateTime?,
+    @Serializable(with = InstantIso8601Serializer::class) val birthday: Instant?,
     val sex: Sex?,
     val weight: Int?,
     val height: Int?,
@@ -32,7 +32,7 @@ data class UserInfo(
     val name: String?,
     val surname: String?,
 
-    @Serializable(with = LocalDateTimeIso8601Serializer::class) val birthday: LocalDateTime?,
+    @Serializable(with = InstantIso8601Serializer::class) val birthday: Instant?,
     val sex: Sex?,
     val weight: Int?,
     val height: Int?,

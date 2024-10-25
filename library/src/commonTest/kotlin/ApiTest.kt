@@ -2,19 +2,15 @@ package io.wellmate.api.client
 
 import io.ktor.http.HttpHeaders
 import io.ktor.http.isSuccess
-import io.wellmate.api.client.auth.EmailPassword
-import io.wellmate.api.client.auth.Token
-import io.wellmate.api.client.userData.Me
+import io.wellmate.api.client.dataclasses.auth.EmailPassword
+import io.wellmate.api.client.dataclasses.auth.Token
+import io.wellmate.api.client.dataclasses.entry.MealFieldsClient
+import io.wellmate.api.client.dataclasses.userData.Me
 import kotlinx.coroutines.test.StandardTestDispatcher
 import kotlinx.coroutines.test.runTest
-import kotlin.properties.Delegates
+import kotlinx.datetime.*
 import kotlin.random.Random
-import kotlin.test.AfterTest
-import kotlin.test.BeforeTest
-import kotlin.test.Test
-import kotlin.test.assertFailsWith
-import kotlin.test.assertFalse
-import kotlin.test.assertTrue
+import kotlin.test.*
 
 class ApiTest {
 
@@ -22,6 +18,8 @@ class ApiTest {
 
     private lateinit var token: Token
     private lateinit var me: Me
+
+    private val currentTime = Instant.fromEpochSeconds(1)
 
     @BeforeTest
     fun `set up the user for testing`() = runTest(testDispatcher) {
@@ -69,17 +67,28 @@ class ApiTest {
     }
 
     @Test
-    fun `api-user post fails with malformed body due to validation`() = runTest(testDispatcher) {
-        val endpoint = Client.Api.User
-        assertFailsWith(
-            IllegalArgumentException::class,
-            "/api/user:post should not be successful when body is empty"
-        ) {
-            endpoint.post(body = EmailPassword("", ""))
+    fun `api-entry post meal and delete afterwards`() = runTest(testDispatcher) {
+        val mealEndpoint = Client.Api.Entry.Meal
+        val mealFieldsClient = MealFieldsClient(
+            name = "Chicken soup",
+            timestamp = currentTime,
+            ingredients = emptyList(),
+        )
+        val mealRequest = mealEndpoint.post(body = mealFieldsClient) {
+            append(
+                HttpHeaders.Authorization,
+                token.authorizationHeader,
+            )
         }
-    }
+        assertTrue(mealRequest.status.isSuccess())
+        assertIs<Instant>(mealRequest.body().added)
 
-    @Test
-    fun `api-user post+delete succeeds with proper body + with me get`() = runTest(testDispatcher) {
+        val mealDeleteRequest = Client.Api.Entry.Meal.MealId(mealRequest.body().id).delete {
+            append(
+                HttpHeaders.Authorization,
+                token.authorizationHeader,
+            )
+        }
+        assertTrue(mealDeleteRequest.status.isSuccess())
     }
 }

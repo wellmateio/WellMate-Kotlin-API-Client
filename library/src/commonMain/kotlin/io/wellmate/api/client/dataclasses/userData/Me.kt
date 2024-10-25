@@ -1,4 +1,4 @@
-package io.wellmate.api.client.userData
+package io.wellmate.api.client.dataclasses.userData
 
 import kotlinx.serialization.Serializable
 

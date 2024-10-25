@@ -1,13 +1,13 @@
-package io.wellmate.api.client.entry
+package io.wellmate.api.client.dataclasses.entry
 
-import kotlinx.datetime.LocalDateTime
-import kotlinx.datetime.serializers.LocalDateTimeIso8601Serializer
+import kotlinx.datetime.Instant
+import kotlinx.datetime.serializers.InstantIso8601Serializer
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 
 interface EntryBaseFieldsClient {
-    val timestamp: LocalDateTime
+    val timestamp: Instant
 }
 
 
@@ -15,7 +15,7 @@ interface EntryBase : EntryBaseFieldsClient {
     val id: Int
     val userId: Int
 
-    val added: LocalDateTime
+    val added: Instant
 }
 
 @Serializable
@@ -30,8 +30,8 @@ enum class EntryType {
 @Serializable
 data class Entry(
     val id: Int,
-    @Serializable(with = LocalDateTimeIso8601Serializer::class) val added: LocalDateTime,
+    @Serializable(with = InstantIso8601Serializer::class) val added: Instant,
     @SerialName("user_id") val userId: Int,
-    @Serializable(with = LocalDateTimeIso8601Serializer::class) val timestamp: LocalDateTime,
+    @Serializable(with = InstantIso8601Serializer::class) val timestamp: Instant,
     val type: EntryType,
 )
