@@ -6,8 +6,6 @@ import io.wellmate.api.client.dataclasses.entry.Ingredient
 import io.wellmate.api.client.dataclasses.entry.Meal
 import kotlinx.datetime.Clock
 import kotlinx.datetime.Instant
-import kotlinx.datetime.TimeZone
-import kotlinx.datetime.toInstant
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import kotlin.random.Random

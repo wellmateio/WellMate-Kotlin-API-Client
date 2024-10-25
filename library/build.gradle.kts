@@ -1,10 +1,9 @@
-import com.vanniktech.maven.publish.SonatypeHost
+import org.apache.tools.ant.taskdefs.condition.Os
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.targets.native.tasks.KotlinNativeSimulatorTest
-import org.apache.tools.ant.taskdefs.condition.Os
 import java.io.ByteArrayOutputStream
-import java.util.Properties
+import java.util.*
 
 plugins {
     alias(libs.plugins.kotlinMultiplatform)

@@ -2,16 +2,12 @@
 
 package io.wellmate.api.client
 
-import io.ktor.client.HttpClient
-import io.ktor.client.HttpClientConfig
-import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
-import io.ktor.client.plugins.logging.LogLevel
-import io.ktor.client.plugins.logging.Logging
-import io.ktor.http.ContentType
-import io.ktor.http.HeadersBuilder
-import io.ktor.http.parameters
-import io.ktor.serialization.kotlinx.json.json
-import io.ktor.utils.io.ByteReadChannel
+import io.ktor.client.*
+import io.ktor.client.plugins.contentnegotiation.*
+import io.ktor.client.plugins.logging.*
+import io.ktor.http.*
+import io.ktor.serialization.kotlinx.json.*
+import io.ktor.utils.io.*
 import io.wellmate.api.client.dataclasses.auth.EmailPassword
 import io.wellmate.api.client.dataclasses.auth.OAuthToken
 import io.wellmate.api.client.dataclasses.auth.Token
@@ -32,7 +28,7 @@ fun HttpClientConfig<*>.addLogging() {
     }
 }
 
-object Client {
+object WellMateClient {
     private const val URL = "https://wellmate-395510.lm.r.appspot.com"
     val client = HttpClient {
         addLogging()
@@ -46,7 +42,7 @@ object Client {
     }
 
     object Api {
-        private const val URL = "${Client.URL}/api"
+        private const val URL = "${WellMateClient.URL}/api"
 
         object AI {
             private const val URL = "${Api.URL}/ai"
@@ -137,7 +133,7 @@ object Client {
                             append("password", password)
                         }
                     }) {
-                        io.ktor.http.headers {
+                        headers {
                             headers()
                             append("sec-ch-ua-model", secChUaModel)
                             append("sec-ch-ua-platform", secChUaPlatform)
@@ -269,7 +265,7 @@ object Client {
             private const val URL = "${Api.URL}/entry"
             private val endpoint = Endpoint(client = client, url = URL)
 
-            suspend fun get(headers: HeadersBuilder.() -> Unit = { }): ResponseWrapper<io.wellmate.api.client.dataclasses.entry.Entry> {
+            suspend fun get(headers: HeadersBuilder.() -> Unit = { }): ResponseWrapper<List<io.wellmate.api.client.dataclasses.entry.Entry>> {
                 return endpoint.get { headers() }
             }
 
@@ -284,7 +280,7 @@ object Client {
                     return endpoint.post(body = body) { headers() }
                 }
 
-                suspend fun get(headers: HeadersBuilder.() -> Unit = { }): ResponseWrapper<io.wellmate.api.client.dataclasses.entry.Meal> {
+                suspend fun get(headers: HeadersBuilder.() -> Unit = { }): ResponseWrapper<List<io.wellmate.api.client.dataclasses.entry.Meal>> {
                     return endpoint.get { headers() }
                 }
 
@@ -310,7 +306,7 @@ object Client {
                     return endpoint.post(body = body) { headers() }
                 }
 
-                suspend fun get(headers: HeadersBuilder.() -> Unit = { }): ResponseWrapper<io.wellmate.api.client.dataclasses.entry.Timer> {
+                suspend fun get(headers: HeadersBuilder.() -> Unit = { }): ResponseWrapper<List<io.wellmate.api.client.dataclasses.entry.Timer>> {
                     return endpoint.get { headers() }
                 }
 
@@ -333,7 +329,7 @@ object Client {
                 private const val URL = "${Admin.URL}/potential-user"
                 private val endpoint = Endpoint(client = client, url = URL)
 
-                suspend fun get(headers: HeadersBuilder.() -> Unit = { }): ResponseWrapper<io.wellmate.api.client.dataclasses.userData.PotentialUser> {
+                suspend fun get(headers: HeadersBuilder.() -> Unit = { }): ResponseWrapper<List<io.wellmate.api.client.dataclasses.userData.PotentialUser>> {
                     return endpoint.get { headers() }
                 }
             }

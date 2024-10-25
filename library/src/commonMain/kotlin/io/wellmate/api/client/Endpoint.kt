@@ -1,23 +1,12 @@
 package io.wellmate.api.client
 
-import io.ktor.client.HttpClient
-import io.ktor.client.call.body
-import io.ktor.client.request.delete
-import io.ktor.client.request.forms.submitForm
-import io.ktor.client.request.get
-import io.ktor.client.request.headers
-import io.ktor.client.request.post
-import io.ktor.client.request.setBody
+import io.ktor.client.*
+import io.ktor.client.call.*
+import io.ktor.client.request.*
+import io.ktor.client.request.forms.*
 import io.ktor.client.statement.*
-import io.ktor.http.ContentType
-import io.ktor.http.HeadersBuilder
-import io.ktor.http.HttpStatusCode
-import io.ktor.http.ParametersBuilder
-import io.ktor.http.contentType
-import io.ktor.http.isSuccess
-import io.ktor.http.parameters
-import io.ktor.util.reflect.TypeInfo
-import io.ktor.util.reflect.typeInfo
+import io.ktor.http.*
+import io.ktor.util.reflect.*
 
 
 data class ResponseWrapper<T : Any>(

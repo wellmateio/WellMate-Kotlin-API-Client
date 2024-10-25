@@ -1,7 +1,7 @@
 package io.wellmate.api.client.dataclasses.auth
 
 import io.wellmate.api.client.Utils
-import kotlinx.serialization.*
+import kotlinx.serialization.Serializable
 
 @Serializable
 data class EmailPassword(val email: String, val password: String) {
