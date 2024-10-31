@@ -19,6 +19,7 @@ file("version.properties").inputStream().use { stream ->
 }
 
 group = "io.wellmate"
+val library: String = "api.client"
 version = versions.getProperty("version")
 
 kotlin {
@@ -75,11 +76,11 @@ kotlin {
 }
 
 android {
-    namespace = group.toString()
-    compileSdk = 35
+    namespace = "$group.$library"
+    compileSdk = libs.versions.android.compileSdk.get().toInt()
 
     defaultConfig {
-        minSdk = 26
+        minSdk = libs.versions.android.minSdk.get().toInt()
     }
 }
 
@@ -125,8 +126,8 @@ publishing {
 
 mavenPublishing {
     coordinates(
-        groupId = "io.wellmate",
-        artifactId = "api.client",
+        groupId = group.toString(),
+        artifactId = library.toString(),
         version = versions.getProperty("version")
     )
 
