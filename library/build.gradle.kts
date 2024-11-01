@@ -128,7 +128,7 @@ publishing {
 mavenPublishing {
     coordinates(
         groupId = group.toString(),
-        artifactId = library.toString(),
+        artifactId = library,
         version = versions.getProperty("version")
     )
 
