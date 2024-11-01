@@ -8,6 +8,7 @@ import kotlinx.serialization.Serializable
 
 interface EntryBaseFieldsClient {
     val timestamp: Instant
+    val note: String?
 }
 
 

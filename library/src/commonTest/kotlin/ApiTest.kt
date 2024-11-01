@@ -1,18 +1,26 @@
 package io.wellmate.api.client
 
-import io.ktor.http.*
+import io.ktor.http.HttpHeaders
+import io.ktor.http.isSuccess
 import io.wellmate.api.client.dataclasses.auth.EmailPassword
 import io.wellmate.api.client.dataclasses.auth.Token
 import io.wellmate.api.client.dataclasses.entry.Meal
 import io.wellmate.api.client.dataclasses.entry.MealFieldsClient
 import io.wellmate.api.client.dataclasses.entry.Timer
 import io.wellmate.api.client.dataclasses.entry.TimerFieldsClient
+import io.wellmate.api.client.dataclasses.entry.TimerType
 import io.wellmate.api.client.dataclasses.userData.Me
 import kotlinx.coroutines.test.StandardTestDispatcher
 import kotlinx.coroutines.test.runTest
 import kotlinx.datetime.Instant
 import kotlin.random.Random
-import kotlin.test.*
+import kotlin.test.AfterTest
+import kotlin.test.BeforeTest
+import kotlin.test.Test
+import kotlin.test.assertEquals
+import kotlin.test.assertFalse
+import kotlin.test.assertIs
+import kotlin.test.assertTrue
 
 class ApiTest {
 
@@ -70,17 +78,20 @@ class ApiTest {
         val MEAL = MealFieldsClient(
             name = "Chicken soup",
             timestamp = currentTime,
+            note = null,
             ingredients = emptyList(),
         )
         val TIMER = TimerFieldsClient(
             timestamp = currentTime,
+            type = TimerType.MEDITATION,
             duration = Random.nextInt(from = 100, until = 1000),
+            note = "Evening meditation",
         )
 
         class Operations(val token: Token) {
             suspend fun postMeal(): Meal {
                 val mealEndpoint = WellMateClient.Api.Entry.Meal
-                val mealResponse = mealEndpoint.post(body = Entries.MEAL) {
+                val mealResponse = mealEndpoint.post(body = MEAL) {
                     append(
                         HttpHeaders.Authorization,
                         token.authorizationHeader,
@@ -104,7 +115,7 @@ class ApiTest {
 
             suspend fun postTimer(): Timer {
                 val timerEndpoint = WellMateClient.Api.Entry.Timer
-                val timerResponse = timerEndpoint.post(body = Entries.TIMER) {
+                val timerResponse = timerEndpoint.post(body = TIMER) {
                     append(
                         HttpHeaders.Authorization,
                         token.authorizationHeader,
@@ -112,6 +123,7 @@ class ApiTest {
                 }
                 assertTrue(timerResponse.status.isSuccess())
                 assertIs<Instant>(timerResponse.body().added)
+                assertEquals(expected = TIMER.note, actual = timerResponse.body().note)
                 return timerResponse.body()
             }
 

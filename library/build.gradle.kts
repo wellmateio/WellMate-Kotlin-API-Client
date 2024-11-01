@@ -117,7 +117,8 @@ publishing {
             name = "GitHubPackages"
             url = uri("https://maven.pkg.github.com/wellmateio/WellMate-Kotlin-API-Client")
             credentials {
-                username = project.findProperty("gpr.user") as String? ?: System.getenv("GPR_USERNAME")
+                username =
+                    project.findProperty("gpr.user") as String? ?: System.getenv("GPR_USERNAME")
                 password = project.findProperty("gpr.key") as String? ?: System.getenv("GPR_TOKEN")
             }
         }

@@ -6,13 +6,44 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 interface TimerInterface {
+    val type: TimerType
     val duration: Int
+}
+
+
+@Serializable
+enum class TimerType {
+    @SerialName("meditation")
+    MEDITATION,
+
+    @SerialName("walk")
+    WALK,
+
+    @SerialName("pet")
+    PET,
+
+    @SerialName("nap")
+    NAP,
+
+    @SerialName("scrolling")
+    SCROLLING,
+
+    @SerialName("focus")
+    FOCUS,
+
+    @SerialName("sports")
+    SPORTS,
+
+    @SerialName("exercise")
+    EXERCISE,
 }
 
 @Serializable
 data class TimerFieldsClient(
     @Serializable(with = InstantIso8601Serializer::class) override val timestamp: Instant,
+    override val note: String?,
 
+    override val type: TimerType,
     override val duration: Int,
 ) : EntryBaseFieldsClient, TimerInterface
 
@@ -24,6 +55,8 @@ data class Timer(
 
     @Serializable(with = InstantIso8601Serializer::class) override val timestamp: Instant,
     @Serializable(with = InstantIso8601Serializer::class) override val added: Instant,
+    override val note: String?,
 
+    override val type: TimerType,
     override val duration: Int,
 ) : EntryBase, TimerInterface

@@ -57,8 +57,9 @@ class MealTest {
                 userId = 0,
                 added = currentTime,
                 timestamp = currentTime,
+                note = null,
                 name = "",
-                ingredients = emptyList()
+                ingredients = emptyList(),
             )
         )
     }
@@ -70,11 +71,12 @@ class MealTest {
             userId = 0,
             added = presetTime,
             timestamp = presetTime,
+            note = null,
             name = "",
-            ingredients = emptyList()
+            ingredients = emptyList(),
         )
         val expectedJson =
-            "{\"id\":0,\"user_id\":0,\"added\":\"1970-01-01T00:00:01Z\",\"timestamp\":\"1970-01-01T00:00:01Z\",\"name\":\"\",\"ingredients\":[]}"
+            "{\"id\":0,\"user_id\":0,\"added\":\"1970-01-01T00:00:01Z\",\"timestamp\":\"1970-01-01T00:00:01Z\",\"note\":null,\"name\":\"\",\"ingredients\":[]}"
         val json = Json.encodeToString(meal)
         assertEquals(
             expected = expectedJson,
@@ -86,15 +88,16 @@ class MealTest {
     @Test
     fun `Meal is deserializable properly`() {
         val json =
-            "{\"id\":0,\"user_id\":0,\"added\":\"1970-01-01T00:00:01Z\",\"timestamp\":\"1970-01-01T00:00:01Z\",\"name\":\"\",\"ingredients\":[]}"
+            "{\"id\":0,\"user_id\":0,\"added\":\"1970-01-01T00:00:01Z\",\"timestamp\":\"1970-01-01T00:00:01Z\",\"note\":null,\"name\":\"\",\"ingredients\":[]}"
         val meal = Json.decodeFromString<Meal>(json)
         val expectedMeal = Meal(
             id = 0,
             userId = 0,
             added = presetTime,
             timestamp = presetTime,
+            note = null,
             name = "",
-            ingredients = emptyList()
+            ingredients = emptyList(),
         )
         assertEquals(
             expected = expectedMeal,
@@ -110,6 +113,7 @@ class MealTest {
             userId = Random.nextInt(),
             added = currentTime,
             timestamp = currentTime,
+            note = null,
             name = "Test",
             ingredients = listOf(
                 Ingredient(
