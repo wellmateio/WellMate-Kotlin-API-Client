@@ -11,6 +11,7 @@ import io.ktor.client.request.setBody
 import io.ktor.client.statement.HttpResponse
 import io.ktor.http.ContentType
 import io.ktor.http.HeadersBuilder
+import io.ktor.http.HttpHeaders
 import io.ktor.http.HttpStatusCode
 import io.ktor.http.ParametersBuilder
 import io.ktor.http.contentType
@@ -43,6 +44,11 @@ class Endpoint(val client: HttpClient, val url: String) {
         val response: HttpResponse = client.get(url) {
             headers {
                 headers()
+
+                // Authorize if available
+                this[HttpHeaders.Authorization] ?: ApiInstance.instance.token?.let { token ->
+                    append(HttpHeaders.Authorization, token.authorizationHeader)
+                }
             }
         }
         return ResponseWrapper(response, typeInfo<T>())
@@ -58,6 +64,11 @@ class Endpoint(val client: HttpClient, val url: String) {
             }) {
             headers {
                 headers()
+
+                // Authorize if available
+                this[HttpHeaders.Authorization] ?: ApiInstance.instance.token?.let { token ->
+                    append(HttpHeaders.Authorization, token.authorizationHeader)
+                }
             }
         }
         return ResponseWrapper(response, typeInfo<T>())
@@ -71,6 +82,11 @@ class Endpoint(val client: HttpClient, val url: String) {
         val response: HttpResponse = client.post(url) {
             headers {
                 headers()
+
+                // Authorize if available
+                this[HttpHeaders.Authorization] ?: ApiInstance.instance.token?.let { token ->
+                    append(HttpHeaders.Authorization, token.authorizationHeader)
+                }
             }
             contentType(contentType)
             setBody(body)
@@ -84,6 +100,11 @@ class Endpoint(val client: HttpClient, val url: String) {
         val response: HttpResponse = client.delete(url) {
             headers {
                 headers()
+
+                // Authorize if available
+                this[HttpHeaders.Authorization] ?: ApiInstance.instance.token?.let { token ->
+                    append(HttpHeaders.Authorization, token.authorizationHeader)
+                }
             }
         }
         return ResponseWrapper(response, typeInfo<T>())

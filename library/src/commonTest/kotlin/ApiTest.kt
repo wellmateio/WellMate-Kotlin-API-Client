@@ -3,7 +3,6 @@ package io.wellmate.api.client
 import io.ktor.http.HttpHeaders
 import io.ktor.http.isSuccess
 import io.wellmate.api.client.dataclasses.auth.EmailPassword
-import io.wellmate.api.client.dataclasses.auth.Token
 import io.wellmate.api.client.dataclasses.entry.Meal
 import io.wellmate.api.client.dataclasses.entry.MealFieldsClient
 import io.wellmate.api.client.dataclasses.entry.Timer
@@ -26,7 +25,8 @@ class ApiTest {
 
     private val testDispatcher = StandardTestDispatcher()
 
-    private lateinit var token: Token
+    private val apiInstance = ApiInstance()
+
     private lateinit var me: Me
 
     @BeforeTest
@@ -39,14 +39,9 @@ class ApiTest {
         val resultCreate = WellMateClient.Api.User.post(body = emailPassword)
         assertTrue(resultCreate.status.isSuccess())
 
-        token = resultCreate.body()
+        apiInstance.token = resultCreate.body()
 
-        val resultMe = WellMateClient.Api.User.Me.get {
-            append(
-                HttpHeaders.Authorization,
-                token.authorizationHeader,
-            )
-        }
+        val resultMe = WellMateClient.Api.User.Me.get()
         assertTrue(resultMe.status.isSuccess())
         me = resultMe.body()
     }
@@ -54,12 +49,7 @@ class ApiTest {
     @AfterTest
     fun `delete the user used for testing`() = runTest(testDispatcher) {
         val deleteEndpoint = WellMateClient.Api.User.UserId(userId = me.id)
-        val resultDelete = deleteEndpoint.delete {
-            append(
-                HttpHeaders.Authorization,
-                token.authorizationHeader,
-            )
-        }
+        val resultDelete = deleteEndpoint.delete()
         assertTrue(resultDelete.status.isSuccess())
     }
 
@@ -67,7 +57,7 @@ class ApiTest {
     fun `api-user-me get fails with no headers`() = runTest(testDispatcher) {
         val endpoint = WellMateClient.Api.User.Me
         assertFalse(
-            endpoint.get { }.status.isSuccess(),
+            endpoint.get { append(HttpHeaders.Authorization, "") }.status.isSuccess(),
             "/api/user/me:get should not be successful when no header is provided"
         )
     }
@@ -88,15 +78,10 @@ class ApiTest {
             note = "Evening meditation",
         )
 
-        class Operations(val token: Token) {
+        class Operations {
             suspend fun postMeal(): Meal {
                 val mealEndpoint = WellMateClient.Api.Entry.Meal
-                val mealResponse = mealEndpoint.post(body = MEAL) {
-                    append(
-                        HttpHeaders.Authorization,
-                        token.authorizationHeader,
-                    )
-                }
+                val mealResponse = mealEndpoint.post(body = MEAL)
                 assertTrue(mealResponse.status.isSuccess())
                 assertIs<Instant>(mealResponse.body().added)
                 return mealResponse.body()
@@ -104,23 +89,13 @@ class ApiTest {
 
             suspend fun deleteMeal(mealId: Int) {
                 val mealEndpoint = WellMateClient.Api.Entry.Meal.MealId(mealId)
-                val mealResponse = mealEndpoint.delete {
-                    append(
-                        HttpHeaders.Authorization,
-                        token.authorizationHeader,
-                    )
-                }
+                val mealResponse = mealEndpoint.delete()
                 assertTrue(mealResponse.status.isSuccess())
             }
 
             suspend fun postTimer(): Timer {
                 val timerEndpoint = WellMateClient.Api.Entry.Timer
-                val timerResponse = timerEndpoint.post(body = TIMER) {
-                    append(
-                        HttpHeaders.Authorization,
-                        token.authorizationHeader,
-                    )
-                }
+                val timerResponse = timerEndpoint.post(body = TIMER)
                 assertTrue(timerResponse.status.isSuccess())
                 assertIs<Instant>(timerResponse.body().added)
                 assertEquals(expected = TIMER.note, actual = timerResponse.body().note)
@@ -129,12 +104,7 @@ class ApiTest {
 
             suspend fun deleteTimer(timerId: Int) {
                 val timerEndpoint = WellMateClient.Api.Entry.Timer.TimerId(timerId)
-                val timerResponse = timerEndpoint.delete {
-                    append(
-                        HttpHeaders.Authorization,
-                        token.authorizationHeader,
-                    )
-                }
+                val timerResponse = timerEndpoint.delete()
                 assertTrue(timerResponse.status.isSuccess())
             }
         }
@@ -142,14 +112,14 @@ class ApiTest {
 
     @Test
     fun `api-entry post meal and delete afterwards`() = runTest(testDispatcher) {
-        val operations = Entries.Operations(token)
+        val operations = Entries.Operations()
         val meal = operations.postMeal()
         operations.deleteMeal(meal.id)
     }
 
     @Test
     fun `api-entry post timer and delete afterwards`() = runTest(testDispatcher) {
-        val operations = Entries.Operations(token)
+        val operations = Entries.Operations()
         val timer = operations.postTimer()
         operations.deleteTimer(timer.id)
     }
@@ -157,17 +127,12 @@ class ApiTest {
 
     @Test
     fun `api-entry post entry + timer and return both`() = runTest(testDispatcher) {
-        val operations = Entries.Operations(token)
+        val operations = Entries.Operations()
 
         val meal = operations.postMeal()
         val timer = operations.postTimer()
 
-        val entriesEndpoint = WellMateClient.Api.Entry.get {
-            append(
-                HttpHeaders.Authorization,
-                token.authorizationHeader,
-            )
-        }
+        val entriesEndpoint = WellMateClient.Api.Entry.get()
 
         assertTrue(entriesEndpoint.status.isSuccess())
         assertEquals(2, entriesEndpoint.body().size)
