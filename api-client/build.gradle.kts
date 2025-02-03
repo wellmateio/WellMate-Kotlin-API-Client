@@ -2,6 +2,7 @@ import org.apache.tools.ant.taskdefs.condition.Os
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.targets.native.tasks.KotlinNativeSimulatorTest
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompileCommon
 import java.io.ByteArrayOutputStream
 import java.util.Properties
 
@@ -26,6 +27,7 @@ kotlin {
     withSourcesJar(publish = false)
 
     jvmToolchain(17)
+
     androidTarget {
         publishLibraryVariants("release")
 
@@ -38,16 +40,9 @@ kotlin {
     jvm()
     linuxX64()
 
-    listOf(
-        iosX64(),
-        iosArm64(),
-        iosSimulatorArm64()
-    ).forEach { iosTarget ->
-        iosTarget.binaries.framework {
-            baseName = library
-            isStatic = true
-        }
-    }
+    iosX64()
+    iosArm64()
+    iosSimulatorArm64()
 
     sourceSets {
         commonMain.dependencies {

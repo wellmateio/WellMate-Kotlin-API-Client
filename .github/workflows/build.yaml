@@ -37,7 +37,7 @@ jobs:
         uses: rgryta/Check-Bump@main
         with:
           method: 'regex'
-          path: 'library/version.properties'
+          path: 'api-client/version.properties'
           prefix: 'v'
 
       - name: Publish the library
