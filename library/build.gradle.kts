@@ -36,10 +36,18 @@ kotlin {
     }
 
     jvm()
-    iosX64()
-    iosArm64()
-    iosSimulatorArm64()
     linuxX64()
+
+    listOf(
+        iosX64(),
+        iosArm64(),
+        iosSimulatorArm64()
+    ).forEach { iosTarget ->
+        iosTarget.binaries.framework {
+            baseName = library
+            isStatic = true
+        }
+    }
 
     sourceSets {
         commonMain.dependencies {
