@@ -127,28 +127,6 @@ object WellMateClient {
                 private const val URL = "${Login.URL}/password"
                 private val endpoint = Endpoint(client = client, url = URL)
 
-                suspend fun submitForm(
-                    username: String,
-                    password: String,
-                    secChUaModel: String = "Unknown device",
-                    secChUaPlatform: String = "N/A",
-                    headers: HeadersBuilder.() -> Unit = { }
-                ): ResponseWrapper<Token> {
-
-                    return endpoint.submitForm(formParameters = {
-                        parameters {
-                            append("username", username)
-                            append("password", password)
-                        }
-                    }) {
-                        headers {
-                            headers()
-                            append("sec-ch-ua-model", secChUaModel)
-                            append("sec-ch-ua-platform", secChUaPlatform)
-                        }
-                    }
-                }
-
                 suspend fun post(
                     body: UsernamePassword,
                     secChUaModel: String = "Unknown device",
