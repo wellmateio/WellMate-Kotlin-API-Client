@@ -7,8 +7,10 @@ import io.ktor.client.HttpClientConfig
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.client.plugins.logging.LogLevel
 import io.ktor.client.plugins.logging.Logging
+import io.ktor.client.request.forms.FormDataContent
 import io.ktor.http.ContentType
 import io.ktor.http.HeadersBuilder
+import io.ktor.http.Parameters
 import io.ktor.http.headers
 import io.ktor.http.parameters
 import io.ktor.serialization.kotlinx.json.json
@@ -16,6 +18,7 @@ import io.ktor.utils.io.ByteReadChannel
 import io.wellmate.api.client.dataclasses.auth.EmailPassword
 import io.wellmate.api.client.dataclasses.auth.OAuthToken
 import io.wellmate.api.client.dataclasses.auth.Token
+import io.wellmate.api.client.dataclasses.auth.UsernamePassword
 import io.wellmate.api.client.dataclasses.entry.MealFields
 import io.wellmate.api.client.dataclasses.entry.MealFieldsClient
 import io.wellmate.api.client.dataclasses.entry.TimerFieldsClient
@@ -138,6 +141,29 @@ object WellMateClient {
                             append("password", password)
                         }
                     }) {
+                        headers {
+                            headers()
+                            append("sec-ch-ua-model", secChUaModel)
+                            append("sec-ch-ua-platform", secChUaPlatform)
+                        }
+                    }
+                }
+
+                suspend fun post(
+                    body: UsernamePassword,
+                    secChUaModel: String = "Unknown device",
+                    secChUaPlatform: String = "N/A",
+                    headers: HeadersBuilder.() -> Unit = { }
+                ): ResponseWrapper<Token> {
+
+                    val body = FormDataContent(Parameters.build {
+                        append("username", body.username)
+                        append("password", body.password)
+                    })
+                    return endpoint.post(
+                        body = body,
+                        contentType = ContentType.Application.FormUrlEncoded,
+                    ) {
                         headers {
                             headers()
                             append("sec-ch-ua-model", secChUaModel)

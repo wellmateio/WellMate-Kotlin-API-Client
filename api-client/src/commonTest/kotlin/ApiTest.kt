@@ -3,6 +3,7 @@ package io.wellmate.api.client
 import io.ktor.http.HttpHeaders
 import io.ktor.http.isSuccess
 import io.wellmate.api.client.dataclasses.auth.EmailPassword
+import io.wellmate.api.client.dataclasses.auth.UsernamePassword
 import io.wellmate.api.client.dataclasses.entry.Meal
 import io.wellmate.api.client.dataclasses.entry.MealFieldsClient
 import io.wellmate.api.client.dataclasses.entry.Timer
@@ -29,12 +30,15 @@ class ApiTest {
 
     private lateinit var me: Me
 
+    private val username = "tester${Random.nextInt()}@wellmate.test"
+    private val password = "nFbz\$Qc%!!@PgLl@5\\$^pH47XW9vl2D!SEp@b"
+
     @BeforeTest
     fun `set up the user for testing`() = runTest(testDispatcher) {
         // Fake credentials generated for test purposes only
         val emailPassword = EmailPassword(
-            email = "tester${Random.nextInt()}@wellmate.test",
-            password = "nFbz\$Qc%!!@PgLl@5\\$^pH47XW9vl2D!SEp@b",
+            email = username,
+            password = password,
         )
         val resultCreate = WellMateClient.Api.User.post(body = emailPassword)
         assertTrue(resultCreate.status.isSuccess())
@@ -59,6 +63,16 @@ class ApiTest {
         assertFalse(
             endpoint.get { append(HttpHeaders.Authorization, "") }.status.isSuccess(),
             "/api/user/me:get should not be successful when no header is provided"
+        )
+    }
+
+    @Test
+    fun `api-login-password succeeds`() = runTest(testDispatcher) {
+        val endpoint = WellMateClient.Api.Login.Password
+        val body = UsernamePassword(username = username, password = password)
+        assertTrue(
+            endpoint.post(body = body).response.status.isSuccess(),
+            "/api/login/password:post should be successful with proper credentials"
         )
     }
 
