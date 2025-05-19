@@ -177,7 +177,7 @@ class TokenTest {
             tokenType = "Bearer",
             accessToken = "test",
         )
-        val expectedJson = "{\"access_token\":\"test\",\"token_type\":\"Bearer\"}"
+        val expectedJson = "{\"access_token\":\"test\"}"
         val json = Json.encodeToString(token)
         assertEquals(
             expected = expectedJson,
