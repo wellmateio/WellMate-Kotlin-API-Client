@@ -1,7 +1,6 @@
 package io.wellmate.api.client.dataclasses.entry
 
-import kotlinx.datetime.Instant
-import kotlinx.datetime.serializers.InstantIso8601Serializer
+import kotlin.time.Instant
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
@@ -18,7 +17,7 @@ data class MealFields(
 
 @Serializable
 data class MealFieldsClient(
-    @Serializable(with = InstantIso8601Serializer::class) override val timestamp: Instant,
+    @Serializable() override val timestamp: Instant,
     override val note: String?,
 
     override val name: String,
@@ -30,8 +29,8 @@ data class Meal(
     override val id: Int,
     @SerialName("user_id") override val userId: Int,
 
-    @Serializable(with = InstantIso8601Serializer::class) override val added: Instant,
-    @Serializable(with = InstantIso8601Serializer::class) override val timestamp: Instant,
+    @Serializable() override val added: Instant,
+    @Serializable() override val timestamp: Instant,
     override val note: String?,
 
     override val name: String,

@@ -1,7 +1,6 @@
 package io.wellmate.api.client.dataclasses.entry
 
-import kotlinx.datetime.Instant
-import kotlinx.datetime.serializers.InstantIso8601Serializer
+import kotlin.time.Instant
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
@@ -31,8 +30,8 @@ enum class EntryType {
 @Serializable
 data class Entry(
     val id: Int,
-    @Serializable(with = InstantIso8601Serializer::class) val added: Instant,
+    @Serializable() val added: Instant,
     @SerialName("user_id") val userId: Int,
-    @Serializable(with = InstantIso8601Serializer::class) val timestamp: Instant,
+    @Serializable() val timestamp: Instant,
     val type: EntryType,
 )

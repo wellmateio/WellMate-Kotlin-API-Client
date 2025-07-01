@@ -4,8 +4,8 @@ import io.wellmate.api.client.dataclasses.auth.EmailPassword
 import io.wellmate.api.client.dataclasses.auth.Token
 import io.wellmate.api.client.dataclasses.entry.Ingredient
 import io.wellmate.api.client.dataclasses.entry.Meal
-import kotlinx.datetime.Clock
-import kotlinx.datetime.Instant
+import kotlin.time.Clock
+import kotlin.time.Instant
 import kotlinx.serialization.json.Json
 import kotlin.random.Random
 import kotlin.test.Test

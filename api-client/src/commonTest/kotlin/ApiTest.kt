@@ -12,7 +12,7 @@ import io.wellmate.api.client.dataclasses.entry.TimerType
 import io.wellmate.api.client.dataclasses.userData.Me
 import kotlinx.coroutines.test.StandardTestDispatcher
 import kotlinx.coroutines.test.runTest
-import kotlinx.datetime.Instant
+import kotlin.time.Instant
 import kotlin.random.Random
 import kotlin.test.AfterTest
 import kotlin.test.BeforeTest

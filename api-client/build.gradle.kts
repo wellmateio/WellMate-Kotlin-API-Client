@@ -23,6 +23,10 @@ val library: String = "api.client"
 version = versions.getProperty("version")
 
 kotlin {
+    compilerOptions {
+        freeCompilerArgs.add("-opt-in=kotlin.time.ExperimentalTime")
+    }
+
     withSourcesJar(publish = false)
 
     jvmToolchain(17)
