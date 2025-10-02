@@ -18,7 +18,7 @@ data class MealFields(
 @Serializable
 data class MealFieldsClient(
     @Serializable() override val timestamp: Instant,
-    override val note: String?,
+    override val note: String,
 
     override val name: String,
     override val ingredients: List<IngredientFields>,
@@ -31,7 +31,7 @@ data class Meal(
 
     @Serializable() override val added: Instant,
     @Serializable() override val timestamp: Instant,
-    override val note: String?,
+    override val note: String,
 
     override val name: String,
     override val ingredients: List<Ingredient>,

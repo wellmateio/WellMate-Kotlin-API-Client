@@ -40,7 +40,7 @@ enum class TimerType {
 @Serializable
 data class TimerFieldsClient(
     @Serializable() override val timestamp: Instant,
-    override val note: String?,
+    override val note: String,
 
     override val type: TimerType,
     override val duration: Int,
@@ -54,7 +54,7 @@ data class Timer(
 
     @Serializable() override val timestamp: Instant,
     @Serializable() override val added: Instant,
-    override val note: String?,
+    override val note: String,
 
     override val type: TimerType,
     override val duration: Int,

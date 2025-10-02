@@ -82,7 +82,7 @@ class ApiTest {
         val MEAL = MealFieldsClient(
             name = "Chicken soup",
             timestamp = currentTime,
-            note = null,
+            note = "",
             ingredients = emptyList(),
         )
         val TIMER = TimerFieldsClient(
