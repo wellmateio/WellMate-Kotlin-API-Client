@@ -58,7 +58,8 @@ class Endpoint(val client: HttpClient, val url: String) {
         crossinline formParameters: ParametersBuilder.() -> Unit = {},
         crossinline headers: HeadersBuilder.() -> Unit = { },
     ): ResponseWrapper<T> {
-        val response: HttpResponse = client.submitForm(url = url,
+        val response: HttpResponse = client.submitForm(
+            url = url,
             formParameters = parameters {
                 formParameters()
             }) {

@@ -1,8 +1,8 @@
 package io.wellmate.api.client.dataclasses.entry
 
-import kotlin.time.Instant
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
+import kotlin.time.Instant
 
 interface TimerInterface {
     val type: TimerType

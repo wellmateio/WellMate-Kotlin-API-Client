@@ -12,7 +12,6 @@ import io.wellmate.api.client.dataclasses.entry.TimerType
 import io.wellmate.api.client.dataclasses.userData.Me
 import kotlinx.coroutines.test.StandardTestDispatcher
 import kotlinx.coroutines.test.runTest
-import kotlin.time.Instant
 import kotlin.random.Random
 import kotlin.test.AfterTest
 import kotlin.test.BeforeTest
@@ -21,6 +20,7 @@ import kotlin.test.assertEquals
 import kotlin.test.assertFalse
 import kotlin.test.assertIs
 import kotlin.test.assertTrue
+import kotlin.time.Instant
 
 class ApiTest {
 

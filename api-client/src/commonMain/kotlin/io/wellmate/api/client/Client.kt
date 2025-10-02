@@ -12,13 +12,14 @@ import io.ktor.http.ContentType
 import io.ktor.http.HeadersBuilder
 import io.ktor.http.Parameters
 import io.ktor.http.headers
-import io.ktor.http.parameters
 import io.ktor.serialization.kotlinx.json.json
 import io.ktor.utils.io.ByteReadChannel
 import io.wellmate.api.client.dataclasses.auth.EmailPassword
 import io.wellmate.api.client.dataclasses.auth.OAuthToken
 import io.wellmate.api.client.dataclasses.auth.Token
 import io.wellmate.api.client.dataclasses.auth.UsernamePassword
+import io.wellmate.api.client.dataclasses.chat.ChatMessage
+import io.wellmate.api.client.dataclasses.chat.SendMessageRequest
 import io.wellmate.api.client.dataclasses.entry.MealFields
 import io.wellmate.api.client.dataclasses.entry.MealFieldsClient
 import io.wellmate.api.client.dataclasses.entry.TimerFieldsClient
@@ -54,6 +55,31 @@ object WellMateClient {
 
         object AI {
             private const val URL = "${Api.URL}/ai"
+
+            object Conversations {
+                private const val URL = "${AI.URL}/conversations"
+
+                object OpenAI {
+                    private const val URL = "${Conversations.URL}/openai"
+                    private val endpoint = Endpoint(client = client, url = URL)
+
+                    suspend fun post(
+                        body: SendMessageRequest,
+                        headers: HeadersBuilder.() -> Unit = { }
+                    ): ResponseWrapper<ChatMessage> {
+                        return endpoint.post(body = body) { headers() }
+                    }
+                }
+
+                object History {
+                    private const val URL = "${Conversations.URL}/history"
+                    private val endpoint = Endpoint(client = client, url = URL)
+
+                    suspend fun get(headers: HeadersBuilder.() -> Unit = { }): ResponseWrapper<List<ChatMessage>> {
+                        return endpoint.get { headers() }
+                    }
+                }
+            }
 
             object Nutrients {
                 private const val URL = "${AI.URL}/nutrients"

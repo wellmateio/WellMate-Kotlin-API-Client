@@ -1,7 +1,7 @@
 package io.wellmate.api.client.dataclasses.userData
 
-import kotlin.time.Instant
 import kotlinx.serialization.Serializable
+import kotlin.time.Instant
 
 @Serializable
 data class PotentialUserFields(val email: String, val name: String, val info: String?)

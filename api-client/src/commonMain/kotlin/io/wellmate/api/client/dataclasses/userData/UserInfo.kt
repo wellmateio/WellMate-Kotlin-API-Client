@@ -1,8 +1,8 @@
 package io.wellmate.api.client.dataclasses.userData
 
-import kotlin.time.Instant
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
+import kotlin.time.Instant
 
 @Serializable
 enum class Sex {

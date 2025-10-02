@@ -4,14 +4,14 @@ import io.wellmate.api.client.dataclasses.auth.EmailPassword
 import io.wellmate.api.client.dataclasses.auth.Token
 import io.wellmate.api.client.dataclasses.entry.Ingredient
 import io.wellmate.api.client.dataclasses.entry.Meal
-import kotlin.time.Clock
-import kotlin.time.Instant
 import kotlinx.serialization.json.Json
 import kotlin.random.Random
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
 import kotlin.test.assertIs
+import kotlin.time.Clock
+import kotlin.time.Instant
 
 class EmailPasswordTest {
     @Test
